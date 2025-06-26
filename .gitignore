@@ -516,3 +516,5 @@ FodyWeavers.xsd
 #### Manual additions below this line ####
 ##########################################
 .vscode
+custom-metrics
+

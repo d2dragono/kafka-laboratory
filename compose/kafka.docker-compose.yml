@@ -127,6 +127,17 @@ services:
     networks:
       - kafka-net
 
+  node-exporter:
+      image: bitnami/node-exporter:1.9.1
+      ports:
+        - "9100:9100"
+      command:
+      - "--collector.textfile.directory=/var/lib/node_exporter/textfile_collector"
+      volumes:
+        - "${PWD}/custom-metrics:/var/lib/node_exporter/textfile_collector"
+      networks:
+        - kafka-net
+
 
 
   ##################
@@ -149,6 +160,7 @@ services:
     working_dir: /app
     volumes:
       - "${PWD}/java/consumer:/app"
+      - "${PWD}/custom-metrics:/app/metrics"
     command: mvn compile exec:java -Dexec.mainClass="isri.kafka.Consumer"
     depends_on:
       - kafka
