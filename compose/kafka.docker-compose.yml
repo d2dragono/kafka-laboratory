@@ -32,7 +32,7 @@ services:
       KAFKA_JMX_PORT: 9999
       KAFKA_JMX_HOSTNAME: kafka
       KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9404:/opt/jmx_exporter/kafka-jmx-exporter.yml
+        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
         -Dcom.sun.management.jmxremote
         -Dcom.sun.management.jmxremote.local.only=false
         -Dcom.sun.management.jmxremote.authenticate=false
@@ -43,7 +43,7 @@ services:
       - "9092:9092"
       # JMX ports for monitoring
       - "9999:9999"
-      - "9404:9404"
+      - "9406:9406"
     volumes:
       # JMX Exporter files
       - "${PWD}/jmxexporter/jmx_prometheus_javaagent-1.3.0.jar:/opt/jmx_exporter/jmx_prometheus_javaagent.jar"
@@ -76,7 +76,7 @@ services:
       CONNECT_JMX_PORT: 9998
       CONNECT_JMX_HOSTNAME: kafka-connect
       KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9405:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
+        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
         -Dcom.sun.management.jmxremote
         -Dcom.sun.management.jmxremote.local.only=false
         -Dcom.sun.management.jmxremote.authenticate=false
@@ -87,7 +87,7 @@ services:
       - "8083:8083"
       # JMX port for monitoring
       - "9998:9998"
-      - "9405:9405"
+      - "9407:9407"
     volumes:
       # kafka connect plugins
       - "${PWD}/kafka-connect-plugins/confluentinc-kafka-connect-http-source-1.0.0:/usr/share/java/confluentinc-kafka-connect-http-source"
@@ -96,6 +96,21 @@ services:
       - "${PWD}/jmxexporter/config.yml:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml"
     networks:
       - kafka-net
+
+  kafka-client:
+    image: confluentinc/cp-kafka:7.9.1
+    depends_on:
+      - kafka
+    entrypoint: ["sleep", "infinity"]  # Conteneur reste ouvert pour que tu puisses exec dedans
+    networks:
+      - kafka-net
+  # Why this service?
+  # The kafka service have JMX exporter
+  # Thies means that everytime we want tu execture a kafka cli command
+  # it returns an error. we can use this service to execute
+  # kafka cli commands without the JMX exporter
+  # the following command can be used to read api-data topic:
+  # docker exec -it compose-kafka-client-1 kafka-console-consumer --bootstrap-server kafka:9092 --topic api-data --from-beginning
 
 
 
@@ -124,7 +139,18 @@ services:
       - kafka-connect
     volumes:
       - "${PWD}/entrypoints/ubuntu-init.entrypoint.sh:/etc/ubuntu-init/entrypoint.sh"
-      - "${PWD}/kafka-connect-settings/velib-http-source.json:/tmp/velib-http-source.json"
+      - "${PWD}/kafka-connect-settings/amiens-weather-http-source.json:/tmp/amiens-weather-http-source.json"
     entrypoint: ["/etc/ubuntu-init/entrypoint.sh"]
+    networks:
+      - kafka-net
+
+  kafka-consumer:
+    image: maven:3.9.9
+    working_dir: /app
+    volumes:
+      - "${PWD}/java/consumer:/app"
+    command: mvn compile exec:java -Dexec.mainClass="isri.kafka.Consumer"
+    depends_on:
+      - kafka
     networks:
       - kafka-net

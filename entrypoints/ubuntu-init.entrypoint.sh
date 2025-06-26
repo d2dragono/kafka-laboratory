@@ -11,8 +11,8 @@ while ! curl -s http://kafka-connect:8083/connectors > /dev/null; do
     sleep 5
 done
 
-# Creating connector velib-http-source
-echo "[WRAPPER] Creating connector velib-http-source..."
+# Creating connector amiens-weather-http-source
+echo "[WRAPPER] Creating connector amiens-weather-http-source..."
 curl -v -X POST http://kafka-connect:8083/connectors \
      -H "Content-Type: application/json" \
-     --data @/tmp/velib-http-source.json
+     --data @/tmp/amiens-weather-http-source.json
