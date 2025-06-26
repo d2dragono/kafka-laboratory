@@ -1,0 +1,19 @@
+{
+  "name": "Ubuntu + Java + Docker",
+  "image": "ubuntu:22.04",
+  "runArgs": [
+    "--volume=/var/run/docker.sock:/var/run/docker.sock"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17"
+    },
+    "maven": "latest"
+    }
+  },
+  "remoteUser": "root"
+}

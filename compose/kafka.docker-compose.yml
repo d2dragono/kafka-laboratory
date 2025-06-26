@@ -1,0 +1,67 @@
+version: '3.8'
+
+networks:
+  kafka-net:
+    driver: bridge
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.9.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.9.1
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - kafka-net
+
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect:7.9.1
+    depends_on:
+      - kafka
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_REST_PORT: 8083
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_GROUP_ID: "compose-connect-group"
+      CONNECT_CONFIG_STORAGE_TOPIC: "docker-connect-configs"
+      CONNECT_OFFSET_STORAGE_TOPIC: "docker-connect-offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "docker-connect-status"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_PLUGIN_PATH: "/usr/share/java"
+    ports:
+      - "8083:8083"
+    volumes:
+      # kafka connect plugins
+      - "${PWD}/kafka-connect-plugins/confluentinc-kafka-connect-http-source-1.0.0:/usr/share/java/confluentinc-kafka-connect-http-source"
+    networks:
+      - kafka-net
+
+  ubuntu-init:
+    image: ubuntu:24.04
+    depends_on:
+      - kafka-connect
+    volumes:
+      - "${PWD}/entrypoints/ubuntu-init.entrypoint.sh:/etc/ubuntu-init/entrypoint.sh"
+      - "${PWD}/kafka-connect-settings/velib-http-source.json:/tmp/velib-http-source.json"
+    entrypoint: ["/etc/ubuntu-init/entrypoint.sh"]
+    networks:
+      - kafka-net
