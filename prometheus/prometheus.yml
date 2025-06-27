@@ -2,13 +2,29 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'kafka'
+  - job_name: 'kafka1'
     static_configs:
-      - targets: ['kafka:9406']
+      - targets: ['kafka1:9406']
 
-  - job_name: 'kafka-connect'
+  - job_name: 'kafka2'
     static_configs:
-      - targets: ['kafka-connect:9407']
+      - targets: ['kafka2:9406']
+
+  - job_name: 'kafka3'
+    static_configs:
+      - targets: ['kafka3:9406']
+
+  - job_name: 'kafka-connect1'
+    static_configs:
+      - targets: ['kafka-connect1:9407']
+
+  - job_name: 'kafka-connect2'
+    static_configs:
+      - targets: ['kafka-connect2:9407']
+
+  - job_name: 'kafka-connect3'
+    static_configs:
+      - targets: ['kafka-connect3:9407']
 
   - job_name: 'node_exporter'
     static_configs:
