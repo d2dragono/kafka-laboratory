@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 4,
   "links": [],
   "panels": [
     {
@@ -39,16 +39,8 @@
                 "color": "green"
               },
               {
-                "color": "green",
-                "value": 2000
-              },
-              {
-                "color": "yellow",
-                "value": 3000
-              },
-              {
                 "color": "red",
-                "value": 4000
+                "value": 80
               }
             ]
           }
@@ -61,7 +53,7 @@
         "x": 0,
         "y": 0
       },
-      "id": 3,
+      "id": 4,
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -82,7 +74,7 @@
         {
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "kafka_connect_connect_coordinator_metrics_rebalance_latency_avg{job=~\"kafka-connect.\"}",
+          "expr": "kafka_connect_connect_metrics_outgoing_byte_rate{job=~\"kafka-connect.\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "legendFormat": "__auto",
@@ -91,7 +83,7 @@
           "useBackend": false
         }
       ],
-      "title": "Average latency",
+      "title": "Outgoing bytes rate",
       "type": "gauge"
     },
     {
@@ -160,7 +152,80 @@
           "useBackend": false
         }
       ],
-      "title": "Incoming byte rate",
+      "title": "Incoming bytes rate",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "green",
+                "value": 2000
+              },
+              {
+                "color": "yellow",
+                "value": 3000
+              },
+              {
+                "color": "red",
+                "value": 4000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.0.1",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "kafka_connect_connect_coordinator_metrics_rebalance_latency_avg{job=~\"kafka-connect.\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Average latency",
       "type": "gauge"
     },
     {
@@ -192,7 +257,7 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
+        "x": 12,
         "y": 8
       },
       "id": 2,
@@ -230,6 +295,7 @@
     }
   ],
   "preload": false,
+  "refresh": "5s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -241,7 +307,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Kafka connect",
-  "uid": "9cf3f384-c9e5-4aa0-811e-ee93908129b3",
-  "version": 5
+  "title": "Kafka connect data",
+  "uid": "7f51ff8f-852d-4b74-9248-e0a772d36d21",
+  "version": 3
 }

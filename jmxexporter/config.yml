@@ -1,5 +1,6 @@
-startDelaySeconds: 0
-lowercaseOutputName: true
-lowercaseOutputLabelNames: true
+startDelaySeconds: 0             # Initial delay before the first scrape
+lowercaseOutputName: true        # Convert output names to lowercase
+lowercaseOutputLabelNames: true  # Convert label names to lowercase
 rules:
-  - pattern: ".*"
+  - pattern: ".*"                # Match all metrics
+

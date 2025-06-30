@@ -1,0 +1,35 @@
+"name": "amiens-weather-http-source",
+==> Name of the connector
+
+"connector.class": "io.confluent.connect.http.HttpSourceConnector",
+==> Type of connector (here http)
+
+"tasks.max": "1",
+==> Only one kafka-connect, if multiple are in the same groups, will gather data at a time
+
+"url": "https://api.open-meteo.com/v1/forecast?latitude=49.9&longitude=2.3&current_weather=true",
+==> Where to scrap datas
+
+"topic.name.pattern": "api-data",
+==> Name of the topic where to store datas
+
+"confluent.topic.bootstrap.servers": "kafka1:9092,kafka2:9092,kafka3:9092",
+==> Availables kafka
+
+"request.method": "GET",
+==> Http method to use
+
+"poll.interval.ms": "10000",
+==> How often to scrap datas
+
+"value.converter": "org.apache.kafka.connect.json.JsonConverter",
+==> Convert scraped data to json
+
+"value.converter.schemas.enable": "false",
+==> No schema (ex: does not specifies "int" in json data received, etc.)
+
+"http.offset.mode": "SIMPLE_INCREMENTING",
+==> Strategy used for offseting
+
+"http.initial.offset": 0
+==> Initial offset value

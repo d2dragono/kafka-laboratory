@@ -5,13 +5,11 @@
     "tasks.max": "1",
     "url": "https://api.open-meteo.com/v1/forecast?latitude=49.9&longitude=2.3&current_weather=true",
     "topic.name.pattern": "api-data",
-    "confluent.topic.bootstrap.servers": "kafka1:9092,kafka2:9093,kafka3:9094",
+    "confluent.topic.bootstrap.servers": "kafka1:9092,kafka2:9092,kafka3:9092",
     "request.method": "GET",
     "poll.interval.ms": "10000",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
-    "confluent.license": "",
-    "confluent.topic.replication.factor": "1",
     "http.offset.mode": "SIMPLE_INCREMENTING",
     "http.initial.offset": 0
   }

@@ -14,30 +14,24 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
-    ports:
-      - "3001:2181"
     networks:
       - kafka-net
 
   zookeeper2:
     image: confluentinc/cp-zookeeper:7.9.1
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
-    ports:
-      - "3002:2182"
     networks:
       - kafka-net
 
   zookeeper3:
     image: confluentinc/cp-zookeeper:7.9.1
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2183
+      ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
-    ports:
-      - "3003:2183"
     networks:
       - kafka-net
 
@@ -48,27 +42,14 @@ services:
       - zookeeper2
       - zookeeper3
     environment:
-      # Kafka settings
+      # The broker id for this server.
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+      # Available Zookeepers for leader election.
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2181,zookeeper3:2181"
+      # Specifies the listener addresses that the Kafka brokers will advertise to clients and other brokers.
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       # JMX settings for monitoring
-      KAFKA_JMX_PORT: 9999
-      KAFKA_JMX_HOSTNAME: kafka1
-      KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka1
-    ports:
-      # Expose Kafka on port 1001
-      - "1001:9092"
-      # JMX ports for monitoring
-      - "2011:9999"
-      - "2012:9406"
+      KAFKA_OPTS: -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
     volumes:
       # JMX Exporter files
       - "${PWD}/jmxexporter/jmx_prometheus_javaagent-1.3.0.jar:/opt/jmx_exporter/jmx_prometheus_javaagent.jar"
@@ -83,27 +64,14 @@ services:
       - zookeeper2
       - zookeeper3
     environment:
-      # Kafka settings
+      # The broker id for this server.
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      # Available Zookeepers for leader election.
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2181,zookeeper3:2181"
+      # Specifies the listener addresses that the Kafka brokers will advertise to clients and other brokers.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092
       # JMX settings for monitoring
-      KAFKA_JMX_PORT: 9999
-      KAFKA_JMX_HOSTNAME: kafka2
-      KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka2
-    ports:
-      # Expose Kafka on port 1002
-      - "1002:9093"
-      # JMX ports for monitoring
-      - "2021:9999"
-      - "2022:9406"
+      KAFKA_OPTS: -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
     volumes:
       # JMX Exporter files
       - "${PWD}/jmxexporter/jmx_prometheus_javaagent-1.3.0.jar:/opt/jmx_exporter/jmx_prometheus_javaagent.jar"
@@ -118,27 +86,14 @@ services:
       - zookeeper2
       - zookeeper3
     environment:
-      # Kafka settings
+      # The broker id for this server.
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      # Available Zookeepers for leader election.
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2181,zookeeper3:2181"
+      # Specifies the listener addresses that the Kafka brokers will advertise to clients and other brokers.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092
       # JMX settings for monitoring
-      KAFKA_JMX_PORT: 9999
-      KAFKA_JMX_HOSTNAME: kafka3
-      KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka3
-    ports:
-      # Expose Kafka on port 1003
-      - "1003:9094"
-      # JMX ports for monitoring
-      - "2031:9999"
-      - "2032:9406"
+      KAFKA_OPTS: -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9406:/opt/jmx_exporter/kafka-jmx-exporter.yml
     volumes:
       # JMX Exporter files
       - "${PWD}/jmxexporter/jmx_prometheus_javaagent-1.3.0.jar:/opt/jmx_exporter/jmx_prometheus_javaagent.jar"
@@ -153,38 +108,28 @@ services:
       - kafka2
       - kafka3
     environment:
-      # Kafka connect settings
-      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9093,kafka3:9094"
-      CONNECT_REST_PORT: 8083
+
+      # Used to discover all kafka brokers. One is enough, but we provide all for redundancy.
+      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect1
       CONNECT_GROUP_ID: "compose-connect-group"
+
+      # Where the Kafka Connect configuration, offsets, and status are stored
       CONNECT_CONFIG_STORAGE_TOPIC: "docker-connect-configs"
       CONNECT_OFFSET_STORAGE_TOPIC: "docker-connect-offsets"
       CONNECT_STATUS_STORAGE_TOPIC: "docker-connect-status"
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+      # controls the format of the data that will be written to Kafka for source connectors or read from Kafka for sink connectors
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter" 
       CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+      # comma-separated list of paths to directories that contain Kafka Connect plugins
       CONNECT_PLUGIN_PATH: "/usr/share/java"
+
       # JMX settings for monitoring
       CONNECT_JMX_PORT: 9999
       CONNECT_JMX_HOSTNAME: kafka-connect1
-      KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka-connect1
-    ports:
-      # Expose Kafka Connect REST API on port 8083
-      - "4001:8083"
-      # JMX port for monitoring
-      - "5011:9999"
-      - "5012:9407"
+      KAFKA_OPTS: -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
     volumes:
       # kafka connect plugins
       - "${PWD}/kafka-connect-plugins/confluentinc-kafka-connect-http-source-1.0.0:/usr/share/java/confluentinc-kafka-connect-http-source"
@@ -201,38 +146,28 @@ services:
       - kafka2
       - kafka3
     environment:
-      # Kafka connect settings
-      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9093,kafka3:9094"
-      CONNECT_REST_PORT: 8083
+
+      # Used to discover all kafka brokers. One is enough, but we provide all for redundancy.
+      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect2
       CONNECT_GROUP_ID: "compose-connect-group"
+
+      # Where the Kafka Connect configuration, offsets, and status are stored
       CONNECT_CONFIG_STORAGE_TOPIC: "docker-connect-configs"
       CONNECT_OFFSET_STORAGE_TOPIC: "docker-connect-offsets"
       CONNECT_STATUS_STORAGE_TOPIC: "docker-connect-status"
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+      # controls the format of the data that will be written to Kafka for source connectors or read from Kafka for sink connectors
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter" 
       CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+      # comma-separated list of paths to directories that contain Kafka Connect plugins
       CONNECT_PLUGIN_PATH: "/usr/share/java"
+
       # JMX settings for monitoring
       CONNECT_JMX_PORT: 9999
       CONNECT_JMX_HOSTNAME: kafka-connect2
-      KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka-connect2
-    ports:
-      # Expose Kafka Connect REST API on port 8083
-      - "4002:8083"
-      # JMX port for monitoring
-      - "5021:9999"
-      - "5022:9407"
+      KAFKA_OPTS: -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
     volumes:
       # kafka connect plugins
       - "${PWD}/kafka-connect-plugins/confluentinc-kafka-connect-http-source-1.0.0:/usr/share/java/confluentinc-kafka-connect-http-source"
@@ -249,38 +184,29 @@ services:
       - kafka2
       - kafka3
     environment:
-      # Kafka connect settings
-      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9093,kafka3:9094"
-      CONNECT_REST_PORT: 8083
+
+      # Used to discover all kafka brokers. One is enough, but we provide all for redundancy.
+      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect3
       CONNECT_GROUP_ID: "compose-connect-group"
+
+      # Where the Kafka Connect configuration, offsets, and status are stored
       CONNECT_CONFIG_STORAGE_TOPIC: "docker-connect-configs"
       CONNECT_OFFSET_STORAGE_TOPIC: "docker-connect-offsets"
       CONNECT_STATUS_STORAGE_TOPIC: "docker-connect-status"
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+      # controls the format of the data that will be written to Kafka for source connectors or read from Kafka for sink connectors
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter" 
       CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+      # comma-separated list of paths to directories that contain Kafka Connect plugins
       CONNECT_PLUGIN_PATH: "/usr/share/java"
+
       # JMX settings for monitoring
       CONNECT_JMX_PORT: 9999
       CONNECT_JMX_HOSTNAME: kafka-connect3
-      KAFKA_OPTS: >-
-        -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
-        -Dcom.sun.management.jmxremote
-        -Dcom.sun.management.jmxremote.local.only=false
-        -Dcom.sun.management.jmxremote.authenticate=false
-        -Dcom.sun.management.jmxremote.ssl=false
-        -Djava.rmi.server.hostname=kafka-connect3
-    ports:
-      # Expose Kafka Connect REST API on port 8083
-      - "4003:8083"
-      # JMX port for monitoring
-      - "5031:9999"
-      - "5032:9407"
+      KAFKA_OPTS: -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=9407:/opt/jmx_exporter/kafka-connect-jmx-exporter.yml
+
     volumes:
       # kafka connect plugins
       - "${PWD}/kafka-connect-plugins/confluentinc-kafka-connect-http-source-1.0.0:/usr/share/java/confluentinc-kafka-connect-http-source"
@@ -301,7 +227,7 @@ services:
       - kafka-net
   # Why this service?
   # The kafka service have JMX exporter
-  # Thies means that everytime we want tu execture a kafka cli command
+  # This means that everytime we want tu execture a kafka cli command
   # it returns an error. we can use this service to execute
   # kafka cli commands without the JMX exporter
   # the following command can be used to read api-data topic:
